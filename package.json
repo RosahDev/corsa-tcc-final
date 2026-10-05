@@ -1,0 +1,44 @@
+{
+  "name": "corsa",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:up": "node --env-file=.env --import tsx/esm lib/db/wait-for-db.mts",
+    "db:down": "echo 'O banco está em Supabase ou no PostgreSQL local; para encerrar um serviço local, pare o processo do PostgreSQL na sua máquina.'",
+    "db:migrate": "node --env-file=.env --import tsx/esm lib/db/migrate.mts",
+    "db:seed": "node --env-file=.env --import tsx/esm lib/db/seed.mts",
+    "setup": "npm run db:up && npm run db:migrate && npm run db:seed",
+    "db:wait": "node --env-file=.env --import tsx/esm lib/db/wait-for-db.mts",
+    "data:brazil-cities": "node --import tsx/esm lib/data/generate-brazil-cities.mts"
+  },
+  "dependencies": {
+    "lucide-react": "^0.542.0",
+    "next": "16.3.3",
+    "pg": "^8.23.0",
+    "qrcode": "^1.5.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "sharp": "^0.34.5",
+    "zod": "3.25.36"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/pg": "^8.23.1",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.3",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.12",
+    "typescript": "^5"
+  },
+  "allowScripts": {
+    "sharp@0.34.5": true
+  }
+}
