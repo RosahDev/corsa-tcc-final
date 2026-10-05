@@ -7,7 +7,9 @@ export function normalizeConnectionString(connectionString: string): string {
 
 export function getPoolConfig(connectionString: string): PoolConfig {
   const normalizedConnectionString = normalizeConnectionString(connectionString);
-  const isSupabaseConnection = /supabase\.co/i.test(normalizedConnectionString);
+  const isSupabaseConnection = /supabase\.(?:co|com)/i.test(
+    normalizedConnectionString,
+  );
 
   return {
     connectionString: normalizedConnectionString,

@@ -31,7 +31,8 @@ A aplicacao precisa de um PostgreSQL acessivel pela internet; o PostgreSQL do
 (por exemplo, no Supabase) e, em **Vercel > Settings > Environment Variables**,
 configure para Production:
 
-- `DATABASE_URL`: string de conexao do banco gerenciado.
+- `DATABASE_URL`: string de conexao do banco gerenciado (no Supabase, use a
+  string de conexao do pooler para o deploy serverless).
 - `SESSION_SECRET`: segredo aleatorio e privado para assinar sessoes e o carrinho.
 - `NEXT_PUBLIC_SITE_URL`: URL publica do site, por exemplo `https://seu-dominio.vercel.app`.
 
