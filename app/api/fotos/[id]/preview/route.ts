@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { findPhotoById } from "@/lib/queries/photos";
 import { readPreview } from "@/lib/media/storage";
+import { isMediaNotFound } from "@/lib/media/supabase-storage";
 
 export async function GET(
   _request: Request,
@@ -20,7 +21,11 @@ export async function GET(
         "Cache-Control": "public, max-age=86400",
       },
     });
-  } catch {
-    return new NextResponse("Not found", { status: 404 });
+  } catch (error) {
+    if (isMediaNotFound(error)) {
+      return new NextResponse("Not found", { status: 404 });
+    }
+    console.error("Could not load photo preview", error);
+    return new NextResponse("Could not load image", { status: 500 });
   }
 }

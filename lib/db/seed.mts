@@ -273,7 +273,7 @@ async function main(): Promise<void> {
         imageIndex += 1;
         console.log(`Downloading ${url}`);
         const buffer = await loadSeedImage(url, imageIndex);
-        const saved = await savePhotoFromBuffer(buffer, "photo.jpg");
+        const saved = await savePhotoFromBuffer(buffer);
         const price = 1800 + i * 200;
         const meta = PHOTO_METADATA[imageIndex % PHOTO_METADATA.length];
         const photoResult = await pool.query<{

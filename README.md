@@ -33,14 +33,34 @@ configure para Production:
 
 - `DATABASE_URL`: string de conexao do banco gerenciado (no Supabase, use a
   string de conexao do pooler para o deploy serverless).
+- `SUPABASE_URL`: URL do projeto Supabase.
+- `SUPABASE_SERVICE_ROLE_KEY`: chave secreta do Supabase usada no servidor para
+  ler e gravar arquivos no bucket privado `corsa-media`.
 - `SESSION_SECRET`: segredo aleatorio e privado para assinar sessoes e o carrinho.
 - `NEXT_PUBLIC_SITE_URL`: URL publica do site, por exemplo `https://seu-dominio.vercel.app`.
+
+Configure `SESSION_SECRET` no ambiente Production. Se usar URLs de Preview,
+configure tambem `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` e
+`SESSION_SECRET` para Preview. O valor local de `.env` nao e enviado para a
+Vercel.
+
+Se um cadastro falhou enquanto `SESSION_SECRET` estava ausente, tente entrar
+com o mesmo e-mail depois de corrigir a variavel antes de cadastrar novamente:
+o usuario pode ter sido criado antes de a sessao falhar.
 
 Depois de adicionar ou alterar variaveis, faca um novo deploy. Antes de abrir o
 site pela primeira vez, aplique as migrations no banco de producao com
 `npm run db:migrate`, usando localmente a mesma `DATABASE_URL` configurada na
 Vercel. **Nao execute `npm run setup` em producao**: esse comando tambem roda o
 seed de demonstracao, que limpa tabelas existentes e insere dados de exemplo.
+
+Para disponibilizar imagens que estao na pasta local `storage/`, configure
+`SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` no `.env` local e execute
+`npm run media:migrate`. O script cria o bucket privado `corsa-media` se
+necessario e envia originais, previews e avatares, mantendo as chaves usadas no
+banco. As mesmas variaveis devem estar na Vercel para que imagens novas e futuros
+uploads usem armazenamento persistente. Mantenha `SUPABASE_SERVICE_ROLE_KEY`
+privada; nunca use um prefixo `NEXT_PUBLIC_` para essa chave.
 
 ## Scripts
 
@@ -54,6 +74,7 @@ seed de demonstracao, que limpa tabelas existentes e insere dados de exemplo.
 | `npm run db:migrate` | Aplica migrations SQL |
 | `npm run db:seed` | Popula dados demo |
 | `npm run setup` | db:up + migrate + seed |
+| `npm run media:migrate` | Envia arquivos locais para o Supabase Storage |
 
 ## Contas demo (apos seed)
 
@@ -78,13 +99,16 @@ seed de demonstracao, que limpa tabelas existentes e insere dados de exemplo.
 # PostgreSQL local
 DATABASE_URL=postgresql://corsa:corsa@localhost:5432/corsa
 
-# Ou Supabase
-# DATABASE_URL=postgresql://postgres:[SENHA]@db.[PROJETO_ID].supabase.co:5432/postgres?sslmode=require
+# Supabase: use a URL do Transaction Pooler copiada em Connect no painel
 
 SESSION_SECRET=string-aleatoria-longa
+SUPABASE_URL=https://[PROJETO_ID].supabase.co
+SUPABASE_SERVICE_ROLE_KEY=[CHAVE_SECRETA_DO_SUPABASE]
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ## Supabase
 
-Se preferir usar um projeto Supabase, crie um projeto no painel e copie a string de conexão da aba "Database". Como a app usa apenas a variável `DATABASE_URL`, ela funciona igual com PostgreSQL local ou com o Supabase.
+Copie a URL PostgreSQL do pooler pela opcao **Connect** do Supabase. Para o
+armazenamento de imagens, use a URL do projeto e a chave `service_role`; a
+aplicacao cria e usa o bucket privado `corsa-media` pelo servidor.

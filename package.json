@@ -13,6 +13,7 @@
     "db:seed": "node --env-file=.env --import tsx/esm lib/db/seed.mts",
     "setup": "npm run db:up && npm run db:migrate && npm run db:seed",
     "db:wait": "node --env-file=.env --import tsx/esm lib/db/wait-for-db.mts",
+    "media:migrate": "node --env-file=.env --import tsx/esm lib/media/migrate-local-media.mts",
     "data:brazil-cities": "node --import tsx/esm lib/data/generate-brazil-cities.mts"
   },
   "dependencies": {

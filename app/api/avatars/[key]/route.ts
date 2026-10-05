@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { readAvatar } from "@/lib/media/avatars";
+import { isMediaNotFound } from "@/lib/media/supabase-storage";
 
 export async function GET(
   _request: Request,
@@ -18,7 +19,11 @@ export async function GET(
         "Cache-Control": "public, max-age=86400",
       },
     });
-  } catch {
-    return new NextResponse("Not found", { status: 404 });
+  } catch (error) {
+    if (isMediaNotFound(error)) {
+      return new NextResponse("Not found", { status: 404 });
+    }
+    console.error("Could not load avatar", error);
+    return new NextResponse("Could not load image", { status: 500 });
   }
 }

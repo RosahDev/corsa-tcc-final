@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { findPhotoById, userOwnsPhoto } from "@/lib/queries/photos";
 import { readOriginal } from "@/lib/media/storage";
+import { isMediaNotFound } from "@/lib/media/supabase-storage";
 
 export async function GET(
   _request: Request,
@@ -32,7 +33,11 @@ export async function GET(
         "Content-Disposition": `attachment; filename="corsa-${id}.${ext}"`,
       },
     });
-  } catch {
-    return new NextResponse("Not found", { status: 404 });
+  } catch (error) {
+    if (isMediaNotFound(error)) {
+      return new NextResponse("Not found", { status: 404 });
+    }
+    console.error("Could not load original photo", error);
+    return new NextResponse("Could not load image", { status: 500 });
   }
 }

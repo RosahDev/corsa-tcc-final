@@ -14,6 +14,10 @@ function getSecret(): string {
   return secret;
 }
 
+export function assertSessionSecretConfigured(): void {
+  getSecret();
+}
+
 function sign(payload: string): string {
   return createHmac("sha256", getSecret()).update(payload).digest("base64url");
 }

@@ -4,7 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { generateUniqueHandle } from "@/lib/auth/handle";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
-import { createSession, clearSession } from "@/lib/auth/session";
+import {
+  assertSessionSecretConfigured,
+  createSession,
+  clearSession,
+} from "@/lib/auth/session";
 import {
   createUser,
   findUserByEmail,
@@ -30,6 +34,7 @@ export async function loginAction(
     return { error: firstZodError(parsed.error) };
   }
 
+  assertSessionSecretConfigured();
   const user = await findUserByEmail(parsed.data.email);
   if (!user || !verifyPassword(parsed.data.password, user.password_hash)) {
     return { error: "E-mail ou senha incorretos" };
@@ -68,6 +73,7 @@ export async function registerBuyerAction(
     return { error: firstZodError(parsed.error) };
   }
 
+  assertSessionSecretConfigured();
   if (await isEmailTaken(parsed.data.email)) {
     return { error: "Este e-mail ja esta cadastrado" };
   }
@@ -98,6 +104,7 @@ export async function registerPhotographerAction(
     return { error: firstZodError(parsed.error) };
   }
 
+  assertSessionSecretConfigured();
   if (await isEmailTaken(parsed.data.email)) {
     return { error: "Este e-mail ja esta cadastrado" };
   }

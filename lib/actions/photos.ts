@@ -38,7 +38,7 @@ export async function uploadPhotosAction(
 
   for (const file of files) {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const saved = await savePhotoFromBuffer(buffer, file.name);
+    const saved = await savePhotoFromBuffer(buffer);
     await insertPhoto({
       albumId,
       originalKey: saved.originalKey,
