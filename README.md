@@ -24,6 +24,23 @@ npm run dev
 
 O comando `setup` valida a conexao com o banco, aplica migrations e popula dados de demonstracao.
 
+## Deploy na Vercel
+
+A aplicacao precisa de um PostgreSQL acessivel pela internet; o PostgreSQL do
+`docker-compose.yml` e apenas para desenvolvimento local. Crie um banco gerenciado
+(por exemplo, no Supabase) e, em **Vercel > Settings > Environment Variables**,
+configure para Production:
+
+- `DATABASE_URL`: string de conexao do banco gerenciado.
+- `SESSION_SECRET`: segredo aleatorio e privado para assinar sessoes e o carrinho.
+- `NEXT_PUBLIC_SITE_URL`: URL publica do site, por exemplo `https://seu-dominio.vercel.app`.
+
+Depois de adicionar ou alterar variaveis, faca um novo deploy. Antes de abrir o
+site pela primeira vez, aplique as migrations no banco de producao com
+`npm run db:migrate`, usando localmente a mesma `DATABASE_URL` configurada na
+Vercel. **Nao execute `npm run setup` em producao**: esse comando tambem roda o
+seed de demonstracao, que limpa tabelas existentes e insere dados de exemplo.
+
 ## Scripts
 
 | Comando | Descricao |
@@ -70,4 +87,3 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ## Supabase
 
 Se preferir usar um projeto Supabase, crie um projeto no painel e copie a string de conexão da aba "Database". Como a app usa apenas a variável `DATABASE_URL`, ela funciona igual com PostgreSQL local ou com o Supabase.
-
